@@ -212,32 +212,20 @@ func (e *Engine) supervise(ctx context.Context, start time.Time, batches chan me
 		desired, stage, _ := sched.At(elapsed)
 		e.setStatus(len(active), desired, peak, nextID, stage, len(sched.spans), elapsed, sched.total, false)
 
-		for len(active) < desired {
+		working := countWorking(active)
+		for working < desired {
 			id := nextID
 			nextID++
 			handle := &vuHandle{retire: make(chan struct{})}
 			active[id] = handle
+			working++
 			if len(active) > peak {
 				peak = len(active)
 			}
 			e.spawn(ctx, id, handle.retire, batches, doneVU)
 		}
 
-		surplus := len(active) - desired
-		retired := 0
-		if surplus > 0 {
-			for _, handle := range active {
-				if handle.retiring {
-					continue
-				}
-				close(handle.retire)
-				handle.retiring = true
-				retired++
-				if retired >= surplus {
-					break
-				}
-			}
-		}
+		retireSurplus(active, desired)
 
 		select {
 		case <-ctx.Done():
@@ -280,6 +268,34 @@ func (e *Engine) supervise(ctx context.Context, start time.Time, batches chan me
 	final := <-finalCh
 	e.setStatus(0, 0, peak, nextID, len(sched.spans), len(sched.spans), final.Elapsed, sched.total, true)
 	done <- Result{Snapshot: final, Aborted: aborted, Seed: e.seed}
+}
+
+func countWorking(active map[int]*vuHandle) int {
+	working := 0
+	for _, handle := range active {
+		if !handle.retiring {
+			working++
+		}
+	}
+	return working
+}
+
+func retireSurplus(active map[int]*vuHandle, desired int) {
+	surplus := countWorking(active) - desired
+	if surplus <= 0 {
+		return
+	}
+	for _, handle := range active {
+		if handle.retiring {
+			continue
+		}
+		close(handle.retire)
+		handle.retiring = true
+		surplus--
+		if surplus == 0 {
+			return
+		}
+	}
 }
 
 func (e *Engine) spawn(ctx context.Context, id int, retire <-chan struct{}, batches chan<- metrics.Batch, doneVU chan<- int) {
