@@ -42,6 +42,29 @@ Thanks for helping improve Siafu.
   // Copyright (C) 2026 Siafu contributors
   ```
 
+## Repository mirror
+
+There are two checkouts with different module paths:
+
+- the public repository, `github.com/gac982/siafu`;
+- a private mirror, `github.com/proyect-octopus/siafu`.
+
+Their `.git` histories are intentionally independent: the private mirror keeps
+early `doc/` commits that must not be published. Do not add the public remote to
+the private mirror, do not push its refs, and never copy a `.git` directory
+between them.
+
+Keep tracked content in sync. After applying a change in one checkout, port it
+to the other and verify:
+
+```bash
+scripts/check-parity.sh /path/to/the/other/checkout
+```
+
+The script archives `HEAD` from both repositories, normalizes the two module
+paths, and fails when the trees differ. `git archive` only includes tracked
+files, so ignored directories such as `doc/` are never compared or copied.
+
 ## Security and secrets
 
 - Never commit tokens, passwords, private keys, `.env` files or customer data.

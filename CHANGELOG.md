@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.4.2 — 2026-11-12
+
+### Corregido
+
+- El motor retira solo los VUs sobrantes durante la rampa de bajada, sin reponer VUs por error ni inflar `SpawnedVUs`.
+- El test de configuración inválida de la TUI usa una ruta temporal corta, compatible con macOS.
+
+### Cambiado
+
+- GitHub Actions: `actions/checkout@v7` y `actions/setup-go@v7`.
+- `charm.land/lipgloss/v2` 2.0.6 → 2.1.0.
+
+### Añadido
+
+- `scripts/check-parity.sh` para verificar la paridad de contenido entre el repo público y el mirror privado.
+
+### Verificación
+
+- `go test ./...`, `make check`, `make e2e` y `make vuln` verdes.
+
 ## v0.4.1 — 2026-11-12
 
 ### Corregido
