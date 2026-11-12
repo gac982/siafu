@@ -7,7 +7,7 @@
 ![Go version](https://img.shields.io/badge/go-1.27%2B-00ADD8?logo=go&logoColor=white)
 ![License](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue)
 ![Platforms](https://img.shields.io/badge/platforms-linux%20%7C%20macOS-lightgrey)
-![Status](https://img.shields.io/badge/status-v0.4.1-orange)
+![Status](https://img.shields.io/badge/status-v0.4.2-orange)
 
 **Terminal-based load testing, configured with YAML and written in Go.**
 
@@ -166,7 +166,7 @@ Siafu builds with `CGO_ENABLED=0`: the binary has no system library dependency.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/gac982/siafu.git
+git clone https://github.com/proyect-octopus/siafu.git
 cd siafu
 ```
 
@@ -204,7 +204,7 @@ Expected output (values may vary):
 
 ```text
 [SIAFU logo]
-siafu v0.4.1 (e6e08f4) built 2026-11-12T18:55:50Z · linux/amd64
+siafu v0.4.2 (8eb96fa) built 2026-11-12T23:39:17Z · linux/amd64
 ```
 
 On a terminal, `version` prints the logo in color; when the output is not a TTY or `NO_COLOR` is set, it is rendered in plain text.
@@ -228,9 +228,9 @@ DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 CGO_ENABLED=0 go build -trimpath \
   -ldflags "-s -w \
-    -X github.com/gac982/siafu/internal/version.Version=$VERSION \
-    -X github.com/gac982/siafu/internal/version.Commit=$COMMIT \
-    -X github.com/gac982/siafu/internal/version.Date=$DATE" \
+    -X github.com/proyect-octopus/siafu/internal/version.Version=$VERSION \
+    -X github.com/proyect-octopus/siafu/internal/version.Commit=$COMMIT \
+    -X github.com/proyect-octopus/siafu/internal/version.Date=$DATE" \
   -o bin/siafu ./cmd/siafu
 ```
 
@@ -284,10 +284,10 @@ Make sure `$(go env GOPATH)/bin` is on your `PATH`.
 Once the repository is published and tagged:
 
 ```bash
-go install github.com/gac982/siafu/cmd/siafu@latest
+go install github.com/proyect-octopus/siafu/cmd/siafu@latest
 ```
 
-> If your fork uses a different module path, replace `github.com/gac982/siafu` with yours.
+> If your fork uses a different module path, replace `github.com/proyect-octopus/siafu` with yours.
 
 ## Quick start
 

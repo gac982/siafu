@@ -7,7 +7,7 @@
 ![Go version](https://img.shields.io/badge/go-1.27%2B-00ADD8?logo=go&logoColor=white)
 ![License](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue)
 ![Platforms](https://img.shields.io/badge/platforms-linux%20%7C%20macOS-lightgrey)
-![Status](https://img.shields.io/badge/status-v0.4.1-orange)
+![Status](https://img.shields.io/badge/status-v0.4.2-orange)
 
 **Pruebas de carga por terminal, configuradas con YAML y escritas en Go.**
 
@@ -164,7 +164,7 @@ Siafu compila con `CGO_ENABLED=0`: el binario no depende de librerías del siste
 ### 1. Clona el repositorio
 
 ```bash
-git clone https://github.com/gac982/siafu.git
+git clone https://github.com/proyect-octopus/siafu.git
 cd siafu
 ```
 
@@ -202,7 +202,7 @@ Salida esperada (los valores pueden variar):
 
 ```text
 [SIAFU logo]
-siafu v0.4.1 (e6e08f4) built 2026-11-12T18:55:50Z · linux/amd64
+siafu v0.4.2 (8eb96fa) built 2026-11-12T23:39:17Z · linux/amd64
 ```
 
 En una terminal, `version` imprime el logo en color; si la salida no es una TTY o defines `NO_COLOR`, se muestra en blanco y negro.
@@ -226,9 +226,9 @@ DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 CGO_ENABLED=0 go build -trimpath \
   -ldflags "-s -w \
-    -X github.com/gac982/siafu/internal/version.Version=$VERSION \
-    -X github.com/gac982/siafu/internal/version.Commit=$COMMIT \
-    -X github.com/gac982/siafu/internal/version.Date=$DATE" \
+    -X github.com/proyect-octopus/siafu/internal/version.Version=$VERSION \
+    -X github.com/proyect-octopus/siafu/internal/version.Commit=$COMMIT \
+    -X github.com/proyect-octopus/siafu/internal/version.Date=$DATE" \
   -o bin/siafu ./cmd/siafu
 ```
 
@@ -282,10 +282,10 @@ Asegúrate de que `$(go env GOPATH)/bin` esté en tu `PATH`.
 Cuando el repositorio esté publicado y etiquetado:
 
 ```bash
-go install github.com/gac982/siafu/cmd/siafu@latest
+go install github.com/proyect-octopus/siafu/cmd/siafu@latest
 ```
 
-> Si tu fork usa otra ruta de módulo, cambia `github.com/gac982/siafu` por la tuya.
+> Si tu fork usa otra ruta de módulo, cambia `github.com/proyect-octopus/siafu` por la tuya.
 
 ## Inicio rápido
 
