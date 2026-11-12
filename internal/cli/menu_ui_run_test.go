@@ -81,7 +81,14 @@ func TestUIRunFlowAdvanced(t *testing.T) {
 }
 
 func TestUIRunFlowInvalidConfig(t *testing.T) {
-	bad := filepath.Join(t.TempDir(), "bad.yaml")
+	// Use a short root so the path survives the 76-column TUI truncation on
+	// platforms whose t.TempDir() is long (macOS).
+	dir, err := os.MkdirTemp("/tmp", "siafu-ui-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.RemoveAll(dir) })
+	bad := filepath.Join(dir, "bad.yaml")
 	if err := os.WriteFile(bad, []byte("{no yaml"), 0o600); err != nil {
 		t.Fatal(err)
 	}
