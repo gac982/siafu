@@ -19,7 +19,17 @@ jobs:
           go-version: "1.27.x"
           cache: true
       - run: go mod download
-      - run: make check
+      - name: check
+        run: |
+          set -o pipefail
+          make check 2>&1 | tee /tmp/check.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            grep -E '^(--- FAIL|FAIL|# |panic:)' /tmp/check.log | head -20 | while IFS= read -r line; do
+              echo "::error title=make check::$line"
+            done
+          fi
+          exit "$status"
       - run: make e2e
       - run: make build
       - name: cross compile
