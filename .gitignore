@@ -1,0 +1,12 @@
+bin/
+coverage.out
+.DS_Store
+/siafu
+.superpowers/
+*.log
+
+# documentation
+doc/
+
+# results
+.siafu/

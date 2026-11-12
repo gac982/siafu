@@ -1,0 +1,34 @@
+version: 1
+name: "WebSocket demo"
+target:
+  base_url: "http://127.0.0.1:8080"
+  timeout: 5s
+load:
+  stages:
+    - duration: 2s
+      target_vus: 5
+scenarios:
+  - name: echo
+    steps:
+      - name: conectar
+        websocket:
+          action: connect
+          url: /ws
+          connection: echo
+      - name: enviar
+        websocket:
+          action: send
+          connection: echo
+          text: "hola"
+      - name: recibir
+        websocket:
+          action: receive
+          connection: echo
+          expect:
+            message_contains: "hola"
+      - name: cerrar
+        websocket:
+          action: close
+          connection: echo
+thresholds:
+  error_rate: 0.01

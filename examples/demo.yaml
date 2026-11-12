@@ -1,0 +1,67 @@
+version: 1
+name: "Demo local"
+target:
+  base_url: "http://127.0.0.1:8080"
+  timeout: 5s
+  http_version: auto
+load:
+  think_time: 100ms
+  stages:
+    - duration: 2s
+      target_vus: 10
+    - duration: 8s
+      target_vus: 20
+    - duration: 2s
+      target_vus: 0
+scenarios:
+  - name: home
+    steps:
+      - name: portada
+        request:
+          method: GET
+          url: /
+        expect:
+          status: 200
+          body_contains: "<html"
+  - name: products
+    steps:
+      - name: listado
+        request:
+          method: GET
+          url: /api/products
+        expect:
+          status: 200
+          body_contains: "products"
+        extract:
+          product_id: "json:items.0.id"
+      - name: detalle
+        request:
+          method: GET
+          url: /api/products/${product_id}
+        expect:
+          status: 200
+  - name: login_profile
+    steps:
+      - name: login
+        request:
+          method: POST
+          url: /api/login
+          headers:
+            Content-Type: application/json
+          body: |
+            {"email": "demo@example.com"}
+        expect:
+          status: 200
+        extract:
+          token: "json:token"
+      - name: perfil
+        request:
+          method: GET
+          url: /api/me
+          headers:
+            Authorization: "Bearer ${token}"
+        expect:
+          status: 200
+thresholds:
+  latency_p95: 500ms
+  error_rate: 0.01

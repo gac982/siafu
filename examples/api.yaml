@@ -1,0 +1,49 @@
+version: 1
+name: "API de ejemplo"
+target:
+  base_url: "https://api.example.com"
+  timeout: 10s
+  headers:
+    Accept: "application/json"
+load:
+  think_time:
+    min: 200ms
+    max: 600ms
+  stages:
+    - duration: 15s
+      target_vus: 5
+    - duration: 30s
+      target_vus: 20
+    - duration: 15s
+      target_vus: 0
+vars:
+  user_email: "load+${ENV:RUN_ID}@example.com"
+scenarios:
+  - name: login_and_profile
+    steps:
+      - name: login
+        request:
+          method: POST
+          url: /login
+          headers:
+            Content-Type: application/json
+          body: |
+            {"email": "${user_email}", "password": "${ENV:LOAD_PASSWORD}"}
+        expect:
+          status: 200
+        extract:
+          token: "json:token"
+      - name: profile
+        request:
+          method: GET
+          url: /me
+          headers:
+            Authorization: "Bearer ${token}"
+        expect:
+          status: 200
+          body_contains: "email"
+thresholds:
+  latency_p95: 400ms
+  latency_p99: 1200ms
+  error_rate: 0.01
+  min_rps: 10

@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Siafu contributors
+#
+# Perfil open-loop para el demo local: sube de 1k a 20k iteraciones/s.
+# El script scripts/stress-open.sh arranca el demo y mide RSS/descartes.
+
+version: 1
+name: "Estrés API open-loop"
+target:
+  base_url: "http://127.0.0.1:8080"
+  timeout: 10s
+load:
+  mode: open
+  open_loop:
+    stages:
+      - duration: 5s
+        target_rate: 1000
+      - duration: 10s
+        target_rate: 5000
+      - duration: 10s
+        target_rate: 20000
+      - duration: 5s
+        target_rate: 20000
+      - duration: 5s
+        target_rate: 0
+    max_in_flight: 8000
+    on_overload: drop
+    on_analysis_exhausted: skip
+limits:
+  memory_budget_mb: 600
+  max_idle_conns: 1024
+scenarios:
+  - name: health
+    steps:
+      - name: check
+        request:
+          method: GET
+          url: /
+        expect:
+          status: 200
+thresholds:
+  latency_p95: 2s
+  error_rate: 0.0

@@ -1,0 +1,27 @@
+version: 1
+name: "Demo con umbral imposible"
+target:
+  base_url: "http://127.0.0.1:8080"
+  timeout: 5s
+load:
+  think_time: 50ms
+  stages:
+    - duration: 1s
+      target_vus: 5
+    - duration: 2s
+      target_vus: 10
+    - duration: 1s
+      target_vus: 0
+scenarios:
+  - name: home
+    steps:
+      - name: portada
+        request:
+          method: GET
+          url: /
+        expect:
+          status: 200
+thresholds:
+  latency_p95: 500ms
+  error_rate: 0.01
+  min_rps: 100000

@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Siafu contributors
+#
+# Perfil de estrés para medir 15 000 VUs concurrentes contra el demo local.
+# El script scripts/stress-15k.sh sustituye 15000 por $VUS para la línea base.
+
+version: 1
+name: "Estrés 15 000 VUs"
+target:
+  base_url: "http://127.0.0.1:8080"
+  timeout: 10s
+load:
+  max_vus: 15000
+  think_time: 100ms
+  seed: 42
+  stages:
+    - duration: 15s
+      target_vus: 15000
+    - duration: 10s
+      target_vus: 15000
+    - duration: 5s
+      target_vus: 0
+limits:
+  memory_budget_mb: 1024
+scenarios:
+  - name: home
+    steps:
+      - name: portada
+        request:
+          method: GET
+          url: /
+        expect:
+          status: 200
+thresholds:
+  latency_p95: 2s
+  error_rate: 0.0

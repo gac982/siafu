@@ -1,0 +1,45 @@
+version: 1
+name: "Prueba completa"
+target:
+  base_url: "https://api.example.com"
+  timeout: 12s
+  http_version: "2"
+  headers:
+    Accept: "application/json"
+  tls:
+    insecure_skip_verify: true
+    ca_file: "/tmp/ca.pem"
+load:
+  max_vus: 500
+  seed: 42
+  think_time:
+    min: 100ms
+    max: 300ms
+  stages:
+    - duration: 10s
+      target_vus: 5
+    - duration: 20s
+      target_vus: 50
+vars:
+  email: "load@example.com"
+scenarios:
+  - name: browse
+    steps:
+      - name: list
+        request:
+          method: GET
+          url: /items
+          headers:
+            X-Test: "1"
+          body: ""
+        expect:
+          status: [200, 304]
+          body_contains: "items"
+          max_duration: 2s
+        extract:
+          id: "json:items.0.id"
+thresholds:
+  latency_p95: 300ms
+  latency_p99: 900ms
+  error_rate: 0.01
+  min_rps: 10

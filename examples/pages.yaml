@@ -1,0 +1,35 @@
+version: 1
+name: "Sitio público"
+target:
+  base_url: "https://example.com"
+  timeout: 15s
+load:
+  think_time: 800ms
+  stages:
+    - duration: 20s
+      target_vus: 10
+    - duration: 40s
+      target_vus: 30
+    - duration: 10s
+      target_vus: 0
+scenarios:
+  - name: home
+    steps:
+      - name: portada
+        request:
+          method: GET
+          url: /
+        expect:
+          status: 200
+          body_contains: "<html"
+  - name: about
+    steps:
+      - name: acerca
+        request:
+          method: GET
+          url: /about
+        expect:
+          status: [200, 304]
+thresholds:
+  latency_p95: 800ms
+  error_rate: 0.02

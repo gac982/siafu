@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.27.x"
+          cache: true
+      - run: go mod download
+      - run: make check
+      - run: make e2e
+      - run: make build
+      - name: cross compile
+        if: matrix.os == 'ubuntu-latest'
+        run: make build-all
